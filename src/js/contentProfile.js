@@ -102,10 +102,11 @@ function processData(resultArr){
   })
   $('#unsolved_count').text(`Count : ${unsolvedCount}`);
   for(let[key,val] of ratings){
-    // console.log(key+'-'+val);
-    ratingChartLabel.push(key);
-    ratingChartData.push(val);
-    ratingChartBackgroundColor.push(ratingBackgroundColor(key));
+    if(key != 800){
+      ratingChartLabel.push(key);
+      ratingChartData.push(val);
+      ratingChartBackgroundColor.push(ratingBackgroundColor(key));
+    }
   }
   for(let[key,val] of tags){
     console.log(key+'-'+val);
