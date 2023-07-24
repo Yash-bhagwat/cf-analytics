@@ -75,7 +75,9 @@ function processData(resultArr){
       }
       let cnt = ratings.get(prob.rating);
       cnt++;
-      ratings.set(prob.rating,cnt);
+      if(prob.rating != 800){
+        ratings.set(prob.rating,cnt);
+      }
     }
     if(prob.solved===false){
       unsolvedCount++;
