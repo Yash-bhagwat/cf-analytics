@@ -35,7 +35,6 @@ chrome.runtime.sendMessage({todo:"appendHTML"},function(response){
         //processdata
         processData(data.result);
         createProblemRatingChart();
-        createTagChart();
       }else{
         //response not loaded
         console.error(data.status + ' : ' + data.comment);
@@ -67,7 +66,6 @@ function processData(resultArr){
       problems.set(problemId,obj);
     }
   }
-  let unsolvedCount = 0;
   problems.forEach(function(prob){
     if(prob.rating && prob.solved===true){
       if(!ratings.has(prob.rating)){
@@ -78,16 +76,6 @@ function processData(resultArr){
       if(prob.rating != 800){
         ratings.set(prob.rating,cnt);
       }
-    }
-    if(prob.solved===false){
-      unsolvedCount++;
-      const problemURL = findProblemURL(prob.contestId,prob.index);
-      $('#unsolved_list').append(`
-          <a class="unsolved_problem" href="${problemURL}">
-            ${prob.contestId}-${prob.index}
-          </a>
-      `);
-      $('#unsolved_list').append("     ");
     }
     if(prob.solved===true){
       prob.tags.forEach(function(tag){
@@ -100,7 +88,6 @@ function processData(resultArr){
       })
     }
   })
-  $('#unsolved_count').text(`Count : ${unsolvedCount}`);
   for(let[key,val] of ratings){
     if(key != 800){
       ratingChartLabel.push(key);
@@ -155,40 +142,7 @@ function createProblemRatingChart(){
       }
   });
 }
-function createTagChart(){
-  var ctx = document.getElementById('tagChart').getContext('2d');
-  var myChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-          labels: tagChartLabel,
-          datasets: [{
-              label: 'Tags Solved',
-              data: tagChartData,
-              backgroundColor: colorArray,
-              // borderColor: 'rgba(0,0,0,0.5)',//ratingChartBorderColor,
-              borderWidth: 0.5,
-              // spacing: 5,
-          }]
-      },
-      options: {
-        aspectRatio : 2,
-        plugins: {
-          legend: {
-              display: false,
-              position: 'right',
-          },
-        }
-      },
-  });
-  for(var i=0;i<tagChartLabel.length;i++){
-    $('#legend_unordered_list').append(`<li>
-    <svg width="12" height="12">
-      <rect width="12" height="12" style="fill:${colorArray[i % (colorArray.length)]};stroke-width:1;stroke:rgb(0,0,0)" />
-    </svg>
-    ${tagChartLabel[i]} : ${tagChartData[i]}
-    </li>`)
-  }
-}
+
 function ratingBackgroundColor(rating){
   const legendaryGrandmaster      = 'rgba(170,0  ,0  ,0.9)';
   const internationalGrandmaster  = 'rgba(255,51 ,51 ,0.9)';
